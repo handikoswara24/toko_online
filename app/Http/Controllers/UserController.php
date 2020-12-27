@@ -45,8 +45,9 @@ class UserController extends Controller
         $new_user->password = \Hash::make($request->get('password'));
         if($request->file('avatar')){
             $file = $request->file('avatar')->store('avatars', 'public');
+            $new_user->avatar = $file;
         }
-        $new_user->avatar = $file;
+        
         $new_user->save();
         return redirect()->route('users.create')->with('status', 'User successfully created.');
     }
@@ -108,6 +109,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = \App\Models\User::findOrFail($id);
+        $user->delete();
+        return redirect()->route('users.index')->with('status', 'User successfully deleted');
     }
 }
