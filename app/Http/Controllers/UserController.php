@@ -70,7 +70,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = \App\Models\User::findOrFail($id);
+
+        return view('users.edit', ['user' => $user]);
     }
 
     /**
@@ -82,7 +84,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = \App\Models\User::findOrFail($id);
+        $user->name = $request->get('name');
+        $user->roles = json_encode($request->get('roles'));
+        $user->address = $request->get('address');
+        $user->phone = $request->get('status');
+        if($request->file('avatar')){
+            if($user->avatar && file_exists(storage_path('app/public/' . $user->avatar))){
+                \Storage::delete('public/'.$user->avatar);
+            }
+            $file = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $file;
+        }
+        $user->update();
+        return redirect()->route('users.edit', [$id])->with('status', 'User successfully updated');
     }
 
     /**
