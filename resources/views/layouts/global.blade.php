@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Larashop @yield("title")</title>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('polished/polished.min.css')}}">
     <link rel="stylesheet" href="{{asset('polished/iconic/css/open-iconicbootstrap.
 min.css')}}">
@@ -78,6 +79,7 @@ m-0">
 mb-4" type="text" placeholder="Search" aria-label="Search" />
                     <li><a href="/home"><span class="oi oi-home"></span>
                             Home</a></li>
+                    <li><a href="{{route('users.index')}}"><span class="oi oi-peaple"></span>Manage Users</a></li>
                     <div class="d-block d-md-none">
                         <div class="dropdown-divider"></div>
                         <li><a href="#"> Profile</a></li>
