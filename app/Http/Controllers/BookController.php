@@ -11,9 +11,15 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = \App\Models\Book::with('categories')->paginate(10);
+        $status = $request->get('status');
+
+        if ($status) {
+            $books = \App\Models\Book::with('categories')->where('status', strtoupper($status))->paginate(10);
+        } else {
+            $books = \App\Models\Book::with('categories')->paginate(10);
+        }
         return view('books.index', ['books' => $books]);
     }
 
@@ -132,5 +138,23 @@ class BookController extends Controller
         $book->delete();
 
         return redirect()->route('books.index')->with('status', 'Book moved to trash');
+    }
+
+    public function trash()
+    {
+        $books = \App\Models\Book::onlyTrashed()->paginate(10);
+        return view('books.trash', ['books' => $books]);
+    }
+
+    public function restore($id)
+    {
+        $book = \App\Models\Book::withTrashed()->findOrFail($id);
+
+        if ($book->trashed()) {
+            $book->restore();
+            return redirect()->route('books.trash')->with('status', 'Book successfully restored');
+        } else {
+            return redirect()->route('books.trash')->with('status', 'Book is not in trash');
+        }
     }
 }
