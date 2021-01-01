@@ -1,6 +1,41 @@
 @extends('layouts.global')
 @section('title') Trashed Books @endsection
 @section('content')
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form action="{{route('books.index')}}">
+            <div class="input-group">
+                <input name="keyword" type="text" value="{{Request::get('keyword')}}" class="form-control"
+                    placeholder="Filter by title">
+                <div class="input-group-append">
+                    <input type="submit" value="Filter" class="btn btnprimary">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <ul class="nav nav-pills card-header-pills">
+            <li class="nav-item">
+                <a class="nav-link {{Request::get('status') == NULL &&
+    Request::path() == 'books' ? 'active' : ''}}" href="
+    {{route('books.index')}}">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{Request::get('status') == 'publish' ?
+    'active' : '' }}" href="{{route('books.index', ['status' =>
+    'publish'])}}">Publish</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{Request::get('status') == 'draft' ? 'active'
+    : '' }}" href="{{route('books.index', ['status' => 'draft'])}}">Draft</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{Request::path() == 'books/trash' ? 'active' :
+    ''}}" href="{{route('books.trash')}}">Trash</a>
+            </li>
+        </ul>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-12">
         @if(session('status'))
@@ -48,6 +83,12 @@
                         <form method="POST" action="{{route('books.restore', [$book->id])}}" class="d-inline">
                             @csrf
                             <input type="submit" value="Restore" class="btn btn-success" />
+                        </form>
+                        <form method="POST" action="{{route('books.delete-permanent', [$book->id])}}" class="d-inline"
+                            onsubmit="return confirm('Delete this book permanently?')">
+                            @csrf
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="submit" value="Delete" class="btn btn-danger btn-sm">
                         </form>
                     </td>
                 </tr>
